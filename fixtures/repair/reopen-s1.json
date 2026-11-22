@@ -1,0 +1,47 @@
+{
+  "id": "reopen-s1",
+  "package_id": "PKG3",
+  "screen_id": "S1",
+  "reopened_at": "2026-06-10T10:11:00Z",
+  "artifacts": [
+    {
+      "id": "A-S1-ISO2",
+      "screen_id": "S1",
+      "type": "power_isolation",
+      "device_clock_at": "2026-06-10T10:11:00Z",
+      "clock_offset_seconds": 0,
+      "operator": "tech-lin",
+      "origin_sha": "b5f6f879fb847c60c0c968f37cb320906f06d599e3ddd264ccb7826ceb49238f",
+      "payload": {
+        "bus_voltage": 52.0,
+        "threshold": 48.0,
+        "isolated_rail": true
+      }
+    },
+    {
+      "id": "A-S1-LIT2",
+      "screen_id": "S1",
+      "type": "panel_lightup",
+      "device_clock_at": "2026-06-10T10:11:00Z",
+      "clock_offset_seconds": 0,
+      "operator": "tech-lin",
+      "origin_sha": "2f8f03b3a113667605776838d42efe7156b057e296f8fde7fa94c6b77cb7c588",
+      "payload": {
+        "lit": true,
+        "luminance_cd_m2": 1200
+      }
+    },
+    {
+      "id": "A-S1-PHO",
+      "screen_id": "S1",
+      "type": "reinspect_photo",
+      "device_clock_at": "2026-06-10T10:11:00Z",
+      "clock_offset_seconds": 0,
+      "operator": "tech-lin",
+      "origin_sha": "6bad6b9ea23fdfff0e9c7349f6375094a8b7df5a0e120515c3cb50527ce84c4f",
+      "payload": {
+        "photo_sha": "e485a7160e8669b91ce8b2d2b4ad11597b2a4f11c699cc32131987b49bdd8292"
+      }
+    }
+  ]
+}

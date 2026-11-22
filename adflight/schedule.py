@@ -1,5 +1,12 @@
-from .store import connect,source,already,at
+from .store import connect,source,already,at,parse
 from .creative import eligible
+
+def open_outage(db,screen_id):
+    return db.execute('SELECT * FROM maintenance WHERE screen_id=? AND end_at IS NULL ORDER BY start_at LIMIT 1',(screen_id,)).fetchone()
+
+def under_maintenance(db,screen_id,start,end):
+    row=db.execute('SELECT 1 FROM maintenance WHERE screen_id=? AND start_at<? AND (end_at IS NULL OR end_at>?)',(screen_id,end,start)).fetchone()
+    return row is not None
 
 def screen(path,file):
     with connect(path) as db,db:
@@ -14,10 +21,10 @@ def maintenance(path,file):
         sid,d,replay=source(db,'maintenance',file)
         if already(db,'maintenance',d['id'],sid):return {'id':d['id'],'replayed':True}
         start,end=at(d['start_at']),at(d['end_at'])
-        if start>=end:raise ValueError('invalid_maintenance_window')
+        if end is not None and start>=end:raise ValueError('invalid_maintenance_window')
         if not db.execute('SELECT 1 FROM screen WHERE id=?',(d['screen_id'],)).fetchone():raise ValueError('unknown_screen')
         db.execute('INSERT INTO maintenance VALUES(?,?,?,?,?)',(d['id'],d['screen_id'],start,end,sid))
-        affected=db.execute("SELECT id FROM booking WHERE screen_id=? AND start_at<? AND end_at>? AND status='confirmed'",(d['screen_id'],end,start)).fetchall()
+        affected=db.execute("SELECT id FROM booking WHERE screen_id=? AND start_at<? AND end_at>? AND status='confirmed'",(d['screen_id'],end or '9999-12-31T23:59:59Z',start)).fetchall()
         for row in affected:
             db.execute("UPDATE booking SET status='interrupted' WHERE id=?",(row['id'],))
         return {'id':d['id'],'interrupted':[x['id'] for x in affected]}
@@ -32,7 +39,7 @@ def book(path,file):
         if not screen:raise ValueError('unknown_screen')
         reason=eligible(db,d['creative_id'],d['revision'],screen['city'],start,end)
         if reason:raise ValueError(reason)
-        if db.execute('SELECT 1 FROM maintenance WHERE screen_id=? AND start_at<? AND end_at>?',(d['screen_id'],end,start)).fetchone():raise ValueError('screen_under_maintenance')
+        if under_maintenance(db,d['screen_id'],start,end):raise ValueError('screen_under_maintenance')
         overlap=db.execute("SELECT id FROM booking WHERE screen_id=? AND start_at<? AND end_at>? AND status='confirmed'",(d['screen_id'],end,start)).fetchone()
         status='waitlisted' if overlap else 'confirmed'
         db.execute('INSERT INTO booking VALUES(?,?,?,?,?,?,?,?,?)',(d['id'],d['creative_id'],d['revision'],d['screen_id'],start,end,int(d['priority']),status,sid))

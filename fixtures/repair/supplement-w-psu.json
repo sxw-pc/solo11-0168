@@ -1,0 +1,61 @@
+{
+  "id": "PKG2-PSU",
+  "kind": "supplement",
+  "captured_at": "2026-06-10T10:05:30Z",
+  "artifacts": [
+    {
+      "id": "A-S1-ISO",
+      "screen_id": "S1",
+      "type": "power_isolation",
+      "device_clock_at": "2026-06-10T10:05:00Z",
+      "clock_offset_seconds": 1,
+      "operator": "tech-lin",
+      "origin_sha": "261632e2905b59d5e412b9f9da1a8313be68abbe913933dca9888f6b8493e8d7",
+      "payload": {
+        "bus_voltage": 32.0,
+        "threshold": 48.0,
+        "isolated_rail": true
+      }
+    },
+    {
+      "id": "A-S1-LIT",
+      "screen_id": "S1",
+      "type": "panel_lightup",
+      "device_clock_at": "2026-06-10T10:05:20Z",
+      "clock_offset_seconds": 1,
+      "operator": "tech-lin",
+      "origin_sha": "2f8f03b3a113667605776838d42efe7156b057e296f8fde7fa94c6b77cb7c588",
+      "payload": {
+        "lit": true,
+        "luminance_cd_m2": 1200
+      }
+    },
+    {
+      "id": "A-S2-ISO",
+      "screen_id": "S2",
+      "type": "power_isolation",
+      "device_clock_at": "2026-06-10T10:05:00Z",
+      "clock_offset_seconds": 1,
+      "operator": "tech-lin",
+      "origin_sha": "f40ec11af491354362b27560c45d82da5267f580d809049023286da3635f9cfc",
+      "payload": {
+        "bus_voltage": 52.1,
+        "threshold": 48.0,
+        "isolated_rail": true
+      }
+    },
+    {
+      "id": "A-S2-LIT",
+      "screen_id": "S2",
+      "type": "panel_lightup",
+      "device_clock_at": "2026-06-10T10:05:20Z",
+      "clock_offset_seconds": 1,
+      "operator": "tech-lin",
+      "origin_sha": "9c596df49d33b3c788d2a1dfc6f73a8c3e9cbb0c7759a43f597ab59365841d57",
+      "payload": {
+        "lit": false,
+        "luminance_cd_m2": 0
+      }
+    }
+  ]
+}

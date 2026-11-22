@@ -1,0 +1,22 @@
+{
+  "id": "RE-S2-PO",
+  "package_id": "PKG3",
+  "screen_id": "S2",
+  "reopened_at": "2026-06-10T10:13:00Z",
+  "artifacts": [
+    {
+      "id": "A-S2-ISO3",
+      "screen_id": "S2",
+      "type": "power_isolation",
+      "device_clock_at": "2026-06-10T10:13:00Z",
+      "clock_offset_seconds": 0,
+      "operator": "tech-lin",
+      "origin_sha": "b5f6f879fb847c60c0c968f37cb320906f06d599e3ddd264ccb7826ceb49238f",
+      "payload": {
+        "bus_voltage": 52.0,
+        "threshold": 48.0,
+        "isolated_rail": true
+      }
+    }
+  ]
+}

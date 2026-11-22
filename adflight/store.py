@@ -1,7 +1,7 @@
 import sqlite3,hashlib,json
 from pathlib import Path
 from contextlib import contextmanager
-from datetime import datetime
+from datetime import datetime,timedelta,timezone
 
 SCHEMA='''PRAGMA foreign_keys=ON;
 CREATE TABLE IF NOT EXISTS source(id INTEGER PRIMARY KEY,kind TEXT,sha TEXT UNIQUE,raw BLOB);
@@ -13,7 +13,22 @@ CREATE TABLE IF NOT EXISTS booking(id TEXT PRIMARY KEY,creative_id TEXT,revision
 CREATE TABLE IF NOT EXISTS proof(id TEXT PRIMARY KEY,booking_id TEXT,screen_id TEXT,start_at TEXT,end_at TEXT,observer TEXT,status TEXT,source_id INTEGER);
 CREATE TABLE IF NOT EXISTS obligation(id INTEGER PRIMARY KEY,booking_id TEXT,missing_seconds INTEGER,status TEXT,reason TEXT);
 CREATE TABLE IF NOT EXISTS makegood(id TEXT PRIMARY KEY,obligation_id INTEGER,booking_id TEXT,status TEXT,source_id INTEGER);
+CREATE TABLE IF NOT EXISTS capture_package(id TEXT PRIMARY KEY,kind TEXT,captured_at TEXT,source_id INTEGER);
+CREATE TABLE IF NOT EXISTS artifact(id TEXT PRIMARY KEY,package_id TEXT,screen_id TEXT,type TEXT,device_clock_at TEXT,clock_offset_seconds INTEGER,operator TEXT,origin_sha TEXT,payload TEXT,source_id INTEGER);
+CREATE TABLE IF NOT EXISTS fault_hypothesis(id INTEGER PRIMARY KEY AUTOINCREMENT,screen_id TEXT,component TEXT,status TEXT,eliminated_by TEXT,package_id TEXT);
+CREATE TABLE IF NOT EXISTS screen_outage(id TEXT PRIMARY KEY,screen_id TEXT,package_id TEXT,opened_at TEXT,maintenance_id TEXT,status TEXT,note TEXT);
+CREATE TABLE IF NOT EXISTS spare_part(serial TEXT PRIMARY KEY,kind TEXT,status TEXT,installed_screen TEXT,installed_at TEXT,package_id TEXT);
+CREATE TABLE IF NOT EXISTS part_movement(id INTEGER PRIMARY KEY AUTOINCREMENT,serial TEXT,movement TEXT,screen_id TEXT,other_serial TEXT,at_ TEXT,package_id TEXT,source_id INTEGER);
+CREATE TABLE IF NOT EXISTS dispatch_plan(id TEXT PRIMARY KEY,route TEXT,locked_at TEXT,closed_at TEXT,status TEXT,package_id TEXT,commitments TEXT,source_id INTEGER);
+CREATE TABLE IF NOT EXISTS plan_step(id TEXT PRIMARY KEY,plan_id TEXT,screen_id TEXT,action TEXT,part_serial TEXT,requires_world TEXT,technician TEXT,permit_id TEXT,scheduled_at TEXT,travel_from_screen TEXT,travel_minutes INTEGER,status TEXT);
+CREATE TABLE IF NOT EXISTS part_reservation(part_serial TEXT,plan_id TEXT,screen_id TEXT,package_id TEXT,PRIMARY KEY(part_serial,plan_id));
+CREATE TABLE IF NOT EXISTS repair_order(id TEXT PRIMARY KEY,plan_id TEXT,screen_id TEXT,executed_at TEXT,package_id TEXT,source_id INTEGER);
+CREATE TABLE IF NOT EXISTS reverify(id INTEGER PRIMARY KEY AUTOINCREMENT,screen_id TEXT,check_kind TEXT,result TEXT,package_id TEXT,source_id INTEGER);
+CREATE TABLE IF NOT EXISTS screen_recommission(screen_id TEXT PRIMARY KEY,outage_id TEXT,power_artifact TEXT,display_artifact TEXT,reopened_at TEXT,sell_from TEXT,status TEXT,note TEXT,package_id TEXT,source_id INTEGER);
 '''
+REPAIR_TABLES=('capture_package','artifact','fault_hypothesis','screen_outage','spare_part','part_movement',
+               'dispatch_plan','plan_step','part_reservation','repair_order','reverify','screen_recommission')
+
 @contextmanager
 def connect(path):
     dest=Path(path);dest.parent.mkdir(parents=True,exist_ok=True)
@@ -22,8 +37,18 @@ def connect(path):
     finally:db.close()
 
 def at(value):
+    if value is None:return None
     if not isinstance(value,str) or not value.endswith('Z'):raise ValueError('utc_required')
     datetime.fromisoformat(value[:-1]+'+00:00');return value
+
+def parse(value):
+    return datetime.fromisoformat(value[:-1]+'+00:00')
+
+def fmt(dt):
+    return dt.astimezone(timezone.utc).strftime('%Y-%m-%dT%H:%M:%SZ')
+
+def plus(value,seconds):
+    return fmt(parse(value)+timedelta(seconds=seconds))
 
 def source(db,kind,file):
     raw=Path(file).read_bytes();digest=hashlib.sha256(raw).hexdigest();doc=json.loads(raw)
@@ -41,5 +66,6 @@ def already(db,table,event_id,sid):
     return False
 
 def state(db):
+    tables=('creative','license','screen','maintenance','booking','proof','obligation','makegood')+REPAIR_TABLES
     return {t:[dict(r) for r in db.execute(f'SELECT * FROM {t} ORDER BY 1')]
-            for t in ('creative','license','screen','maintenance','booking','proof','obligation','makegood')}
+            for t in tables}

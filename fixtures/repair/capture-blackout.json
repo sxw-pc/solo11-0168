@@ -1,0 +1,138 @@
+{
+  "id": "PKG1",
+  "kind": "blackout",
+  "captured_at": "2026-06-10T10:04:00Z",
+  "spares": [
+    {
+      "serial": "PSU-9",
+      "kind": "psu"
+    },
+    {
+      "serial": "WU-1",
+      "kind": "whole_unit"
+    },
+    {
+      "serial": "PSU-OLD-S1",
+      "kind": "psu"
+    },
+    {
+      "serial": "PNL-OLD-S2",
+      "kind": "panel"
+    },
+    {
+      "serial": "WU-OLD-S1",
+      "kind": "whole_unit"
+    },
+    {
+      "serial": "PSU-OLD-S2",
+      "kind": "psu"
+    },
+    {
+      "serial": "PNL-OLD-S1",
+      "kind": "panel"
+    }
+  ],
+  "artifacts": [
+    {
+      "id": "A-SCAN-PSU9",
+      "screen_id": "S1",
+      "type": "part_scan",
+      "device_clock_at": "2026-06-10T10:04:00Z",
+      "clock_offset_seconds": 0,
+      "operator": "storekeeper-yu",
+      "origin_sha": "ffd76b6a680a13784b3dd297a61419ce68cec24438b97aa001dd6710cee8ec91",
+      "payload": {
+        "serial": "PSU-9",
+        "kind": "psu",
+        "bin": "A-12",
+        "action": "scan_into_stock"
+      }
+    },
+    {
+      "id": "A-SCAN-WU1",
+      "screen_id": "S1",
+      "type": "part_scan",
+      "device_clock_at": "2026-06-10T10:04:00Z",
+      "clock_offset_seconds": 0,
+      "operator": "storekeeper-yu",
+      "origin_sha": "d0d7f4f136672a758508924675a5c27499e40da1683ac35ce588e8b5bbe4eb56",
+      "payload": {
+        "serial": "WU-1",
+        "kind": "whole_unit",
+        "bin": "B-03",
+        "action": "scan_into_stock"
+      }
+    },
+    {
+      "id": "A-S1-WF",
+      "screen_id": "S1",
+      "type": "waveform",
+      "device_clock_at": "2026-06-10T10:04:00Z",
+      "clock_offset_seconds": 2,
+      "operator": "tech-lin",
+      "origin_sha": "5db62d2764ca3ee67f4cf978e1b5b3e8bce271b2e975c9fc9b553a1bac26f7c8",
+      "payload": {
+        "bus_voltage": 31.2,
+        "rated_voltage": 48.0,
+        "sample_hz": 1000,
+        "samples": 4096
+      }
+    },
+    {
+      "id": "A-S1-PST",
+      "screen_id": "S1",
+      "type": "panel_self_test",
+      "device_clock_at": "2026-06-10T10:04:20Z",
+      "clock_offset_seconds": 2,
+      "operator": "tech-lin",
+      "origin_sha": "ceda7087b1e24e2e7ebfa24e49c537cf41d5f4b58d23fca3be4392d782cbb903",
+      "payload": {
+        "code": "0x-- incomplete",
+        "completed": false,
+        "rows": 3,
+        "expected_rows": 12
+      }
+    },
+    {
+      "id": "A-S1-HB",
+      "screen_id": "S1",
+      "type": "heartbeat",
+      "device_clock_at": "2026-06-10T10:04:30Z",
+      "clock_offset_seconds": 2,
+      "operator": "tech-lin",
+      "origin_sha": "ff44c69140a345db0ed94745a44e863896e4bf4e6434a50612a7de269629496f",
+      "payload": {
+        "alive": true,
+        "note": "control board heartbeat persists during black screen"
+      }
+    },
+    {
+      "id": "A-S2-WF",
+      "screen_id": "S2",
+      "type": "waveform",
+      "device_clock_at": "2026-06-10T10:04:00Z",
+      "clock_offset_seconds": 4,
+      "operator": "tech-lin",
+      "origin_sha": "19d81f4b49ee799798bb95682f33de5d0e30c197c133e45c3453e67b5415b2d5",
+      "payload": {
+        "bus_voltage": 30.8,
+        "rated_voltage": 48.0,
+        "sample_hz": 1000,
+        "samples": 4096
+      }
+    },
+    {
+      "id": "A-S2-HB",
+      "screen_id": "S2",
+      "type": "heartbeat",
+      "device_clock_at": "2026-06-10T10:04:30Z",
+      "clock_offset_seconds": 4,
+      "operator": "tech-lin",
+      "origin_sha": "eb09642aa1e377f547960a05b6d1bee243d63478f3671b311dc18139db4e42e8",
+      "payload": {
+        "alive": true,
+        "note": "single heartbeat point, screen black"
+      }
+    }
+  ]
+}

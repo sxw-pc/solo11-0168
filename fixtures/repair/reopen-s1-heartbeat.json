@@ -1,0 +1,20 @@
+{
+  "id": "reopen-s1-heartbeat",
+  "package_id": "PKG3",
+  "screen_id": "S1",
+  "reopened_at": "2026-06-10T10:11:00Z",
+  "artifacts": [
+    {
+      "id": "A-S1-HB2",
+      "screen_id": "S1",
+      "type": "heartbeat",
+      "device_clock_at": "2026-06-10T10:11:00Z",
+      "clock_offset_seconds": 0,
+      "operator": "tech-lin",
+      "origin_sha": "6c63d4b385b07fe0e09a8a1f95b826e8a7d0401dfd12d649fe7c64b8a785023e",
+      "payload": {
+        "alive": true
+      }
+    }
+  ]
+}

@@ -1,11 +1,14 @@
 import argparse,json,tempfile
 from pathlib import Path
-from . import creative,schedule,playback
+from . import creative,schedule,playback,repair
 from .report import report,audit
 
 COMMANDS={'creative-import':creative.register,'license-import':creative.license,'screen-import':schedule.screen,
           'maintenance-import':schedule.maintenance,'booking-import':schedule.book,'cancel-import':schedule.cancel,
-          'proof-import':playback.proof,'makegood-import':playback.makegood}
+          'proof-import':playback.proof,'makegood-import':playback.makegood,
+          'capture-import':repair.capture,'naive-dispatch':repair.naive_local_dispatch,
+          'plan-import':repair.ratify,'diagnosis-close':repair.close_diagnosis,
+          'repair-execute':repair.execute_repair,'recommission-import':repair.recommission}
 def main():
     p=argparse.ArgumentParser();s=p.add_subparsers(dest='cmd',required=True)
     for cmd in COMMANDS:
