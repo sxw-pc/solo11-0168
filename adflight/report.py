@@ -3,12 +3,14 @@ from pathlib import Path
 from .store import connect,state
 
 def report(path):
-    with connect(path) as db:return {'state':state(db),'sources':[{'kind':x['kind'],'sha':x['sha']} for x in db.execute('SELECT kind,sha FROM source ORDER BY id')]}
+    with connect(path) as db:return {'state':state(db),'sources':[{'kind':x['kind'],'sha':x['sha']} for x in db.execute('SELECT kind,sha FROM source ORDER BY id')],
+                                  'audience':[dict(x) for x in db.execute('SELECT booking_id,COUNT(DISTINCT token) AS device_reach FROM audience_sample GROUP BY booking_id ORDER BY booking_id')]}
 
 def audit(path):
-    from . import creative,schedule,playback
+    from . import creative,schedule,playback,audience
     funcs={'creative':creative.register,'license':creative.license,'screen':schedule.screen,'maintenance':schedule.maintenance,
-           'booking':schedule.book,'cancel':schedule.cancel,'proof':playback.proof,'makegood':playback.makegood}
+           'booking':schedule.book,'cancel':schedule.cancel,'proof':playback.proof,'makegood':playback.makegood,
+           'audience':audience.ingest}
     original=report(path)
     with connect(path) as db:raw=[(x['kind'],x['raw']) for x in db.execute('SELECT kind,raw FROM source ORDER BY id')]
     # Decisions from settle are recomputed after all imported evidence.
