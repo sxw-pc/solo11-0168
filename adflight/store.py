@@ -13,6 +13,16 @@ CREATE TABLE IF NOT EXISTS booking(id TEXT PRIMARY KEY,creative_id TEXT,revision
 CREATE TABLE IF NOT EXISTS proof(id TEXT PRIMARY KEY,booking_id TEXT,screen_id TEXT,start_at TEXT,end_at TEXT,observer TEXT,status TEXT,source_id INTEGER);
 CREATE TABLE IF NOT EXISTS obligation(id INTEGER PRIMARY KEY,booking_id TEXT,missing_seconds INTEGER,status TEXT,reason TEXT);
 CREATE TABLE IF NOT EXISTS makegood(id TEXT PRIMARY KEY,obligation_id INTEGER,booking_id TEXT,status TEXT,source_id INTEGER);
+CREATE TABLE IF NOT EXISTS gps_package(id TEXT PRIMARY KEY,device_id TEXT,vehicle_id TEXT,screen_id TEXT,source_id INTEGER);
+CREATE TABLE IF NOT EXISTS gps_frame(package_id TEXT,seq INTEGER,device_clock TEXT,lat REAL,lon REAL,PRIMARY KEY(package_id,seq));
+CREATE TABLE IF NOT EXISTS calibration(id TEXT PRIMARY KEY,device_id TEXT,base_station TEXT,bias_seconds REAL,tolerance_m REAL,valid_from TEXT,valid_to TEXT,issuer TEXT,source_id INTEGER);
+CREATE TABLE IF NOT EXISTS map_version(id TEXT PRIMARY KEY,published_at TEXT,origin_lat REAL,origin_lon REAL,source_id INTEGER);
+CREATE TABLE IF NOT EXISTS road(id TEXT,map_version TEXT,from_node TEXT,to_node TEXT,zone TEXT,one_way INTEGER,speed_limit_kmh REAL,points TEXT,PRIMARY KEY(id,map_version));
+CREATE TABLE IF NOT EXISTS camera_pass(id TEXT PRIMARY KEY,camera_id TEXT,node TEXT,road_id TEXT,vehicle_id TEXT,observed_at TEXT,issuer TEXT,source_id INTEGER);
+CREATE TABLE IF NOT EXISTS adjudication(id TEXT PRIMARY KEY,package_id TEXT,source_id INTEGER);
+CREATE TABLE IF NOT EXISTS route_decision(id TEXT PRIMARY KEY,package_id TEXT,mode TEXT,decided_at TEXT,stop_start TEXT,stop_end TEXT,status TEXT,source_id INTEGER);
+CREATE TABLE IF NOT EXISTS stop_receipt(id TEXT PRIMARY KEY,decision_id TEXT,device_id TEXT,start_at TEXT,end_at TEXT,attestation TEXT,source_id INTEGER);
+CREATE TABLE IF NOT EXISTS ruling(id INTEGER PRIMARY KEY,package_id TEXT,start_at TEXT,end_at TEXT,verdict TEXT,map_version TEXT,decided_by TEXT,current INTEGER);
 '''
 @contextmanager
 def connect(path):
@@ -41,5 +51,7 @@ def already(db,table,event_id,sid):
     return False
 
 def state(db):
-    return {t:[dict(r) for r in db.execute(f'SELECT * FROM {t} ORDER BY 1')]
-            for t in ('creative','license','screen','maintenance','booking','proof','obligation','makegood')}
+    tables=('creative','license','screen','maintenance','booking','proof','obligation','makegood',
+            'gps_package','gps_frame','calibration','map_version','road','camera_pass',
+            'adjudication','route_decision','stop_receipt','ruling')
+    return {t:[dict(r) for r in db.execute(f'SELECT * FROM {t} ORDER BY 1')] for t in tables}

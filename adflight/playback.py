@@ -27,7 +27,9 @@ def settle(path,booking_id):
         actual=sum(seconds(x['start_at'],x['end_at']) for x in db.execute("SELECT start_at,end_at FROM proof WHERE booking_id=? AND status='valid'",(booking_id,)))
         missing=max(0,target-actual)
         reason='maintenance_interrupted' if b['status']=='interrupted' else 'underplayed' if missing else 'fulfilled'
-        prior=db.execute("SELECT * FROM obligation WHERE booking_id=? AND status='due' ORDER BY id DESC LIMIT 1",(booking_id,)).fetchone()
+        # settle only manages playback-settlement obligations; municipal pause
+        # obligations (reason 'no_broadcast_pause') are a separate ledger
+        prior=db.execute("SELECT * FROM obligation WHERE booking_id=? AND status='due' AND reason IN ('maintenance_interrupted','underplayed') ORDER BY id DESC LIMIT 1",(booking_id,)).fetchone()
         if prior and (prior['missing_seconds']!=missing or prior['reason']!=reason):
             db.execute("UPDATE obligation SET status='superseded' WHERE id=?",(prior['id'],))
             prior=None
