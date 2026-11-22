@@ -1,0 +1,1 @@
+{"sensors":[{"sensor_id":"gate-east","group_id":"clock-east","bias_min_seconds":-5,"bias_max_seconds":5},{"sensor_id":"gate-west","group_id":"clock-west","bias_min_seconds":-5,"bias_max_seconds":5}],"offline":[{"sensor_id":"gate-west","start_at":"2026-06-10T10:02:00Z","end_at":"2026-06-10T10:04:00Z"}]}

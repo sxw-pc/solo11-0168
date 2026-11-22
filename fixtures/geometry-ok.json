@@ -1,0 +1,1 @@
+{"venue_id":"V1","gates":[{"gate_id":"gate-east","direction":"both","in_view":true},{"gate_id":"gate-west","direction":"exit","in_view":true}],"walk_times":[{"from_gate":"gate-east","to_gate":"gate-west","min_seconds":180},{"from_gate":"gate-west","to_gate":"gate-east","min_seconds":180}]}

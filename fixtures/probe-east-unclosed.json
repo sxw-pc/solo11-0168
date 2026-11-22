@@ -1,0 +1,1 @@
+{"booking_id":"B1","sensor_id":"gate-east","page":{"page_no":1,"total_pages":2,"final":false},"frames":[{"id":"F1","sensor_id":"gate-east","observed_at":"2026-06-10T10:01:00Z","token":"rot-11"},{"id":"F3","sensor_id":"gate-east","observed_at":"2026-06-10T10:05:00Z","token":"rot-13"}]}

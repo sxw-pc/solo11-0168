@@ -1,0 +1,1 @@
+{"sensors":[{"sensor_id":"gate-east","group_id":"clock-shared","bias_min_seconds":-30,"bias_max_seconds":30},{"sensor_id":"gate-west","group_id":"clock-shared","bias_min_seconds":-30,"bias_max_seconds":30}],"offline":[]}
