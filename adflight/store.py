@@ -13,6 +13,8 @@ CREATE TABLE IF NOT EXISTS booking(id TEXT PRIMARY KEY,creative_id TEXT,revision
 CREATE TABLE IF NOT EXISTS proof(id TEXT PRIMARY KEY,booking_id TEXT,screen_id TEXT,start_at TEXT,end_at TEXT,observer TEXT,status TEXT,source_id INTEGER);
 CREATE TABLE IF NOT EXISTS obligation(id INTEGER PRIMARY KEY,booking_id TEXT,missing_seconds INTEGER,status TEXT,reason TEXT);
 CREATE TABLE IF NOT EXISTS makegood(id TEXT PRIMARY KEY,obligation_id INTEGER,booking_id TEXT,status TEXT,source_id INTEGER);
+CREATE TABLE IF NOT EXISTS client_package(id TEXT PRIMARY KEY,booking_id TEXT,recipient TEXT,digest TEXT,file_path TEXT,status TEXT);
+CREATE TABLE IF NOT EXISTS client_ack(id TEXT PRIMARY KEY,package_id TEXT,recipient TEXT,digest TEXT,status TEXT);
 '''
 @contextmanager
 def connect(path):
