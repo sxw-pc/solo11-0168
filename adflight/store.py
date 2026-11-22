@@ -1,7 +1,7 @@
-import sqlite3,hashlib,json
+import sqlite3,hashlib,json,os
 from pathlib import Path
 from contextlib import contextmanager
-from datetime import datetime
+from datetime import datetime,timezone
 
 SCHEMA='''PRAGMA foreign_keys=ON;
 CREATE TABLE IF NOT EXISTS source(id INTEGER PRIMARY KEY,kind TEXT,sha TEXT UNIQUE,raw BLOB);
@@ -15,6 +15,14 @@ CREATE TABLE IF NOT EXISTS obligation(id INTEGER PRIMARY KEY,booking_id TEXT,mis
 CREATE TABLE IF NOT EXISTS makegood(id TEXT PRIMARY KEY,obligation_id INTEGER,booking_id TEXT,status TEXT,source_id INTEGER);
 CREATE TABLE IF NOT EXISTS client_package(id TEXT PRIMARY KEY,booking_id TEXT,recipient TEXT,digest TEXT,file_path TEXT,status TEXT);
 CREATE TABLE IF NOT EXISTS client_ack(id TEXT PRIMARY KEY,package_id TEXT,recipient TEXT,digest TEXT,status TEXT);
+CREATE TABLE IF NOT EXISTS publication_route(booking_id TEXT PRIMARY KEY,recipient TEXT,route TEXT,fixed_at TEXT);
+CREATE TABLE IF NOT EXISTS package_snapshot(id TEXT PRIMARY KEY,booking_id TEXT,recipient TEXT,route TEXT,payload TEXT,created_at TEXT);
+CREATE TABLE IF NOT EXISTS package_version(id TEXT PRIMARY KEY,booking_id TEXT,recipient TEXT,seq INTEGER,snapshot_id TEXT,dir_path TEXT,tmp_path TEXT,manifest_digest TEXT,content_digest TEXT,status TEXT,created_at TEXT,updated_at TEXT);
+CREATE TABLE IF NOT EXISTS package_file(package_id TEXT,name TEXT,digest TEXT,bytes_len INTEGER,PRIMARY KEY(package_id,name));
+CREATE TABLE IF NOT EXISTS publication_pointer(booking_id TEXT PRIMARY KEY,current_package_id TEXT,updated_at TEXT);
+CREATE TABLE IF NOT EXISTS package_event(id INTEGER PRIMARY KEY,package_id TEXT,kind TEXT,at TEXT,detail TEXT);
+CREATE TABLE IF NOT EXISTS package_claim(id INTEGER PRIMARY KEY,package_id TEXT,recipient TEXT,claimed_at TEXT);
+CREATE TABLE IF NOT EXISTS package_receipt(id TEXT PRIMARY KEY,package_id TEXT,recipient TEXT,manifest_digest TEXT,status TEXT,reason TEXT,received_at TEXT);
 '''
 @contextmanager
 def connect(path):
@@ -26,6 +34,22 @@ def connect(path):
 def at(value):
     if not isinstance(value,str) or not value.endswith('Z'):raise ValueError('utc_required')
     datetime.fromisoformat(value[:-1]+'+00:00');return value
+
+def now_utc():
+    return datetime.now(timezone.utc).strftime('%Y-%m-%dT%H:%M:%S.%fZ')
+
+def canonical(doc):
+    return json.dumps(doc,sort_keys=True,ensure_ascii=False).encode('utf8')
+
+def digest_of(raw):
+    return hashlib.sha256(raw).hexdigest()
+
+def fsync_dir(path):
+    path=Path(path)
+    if os.name=='posix':
+        fd=os.open(str(path),os.O_RDONLY)
+        try:os.fsync(fd)
+        finally:os.close(fd)
 
 def source(db,kind,file):
     raw=Path(file).read_bytes();digest=hashlib.sha256(raw).hexdigest();doc=json.loads(raw)
