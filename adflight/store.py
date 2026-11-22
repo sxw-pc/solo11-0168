@@ -13,6 +13,12 @@ CREATE TABLE IF NOT EXISTS booking(id TEXT PRIMARY KEY,creative_id TEXT,revision
 CREATE TABLE IF NOT EXISTS proof(id TEXT PRIMARY KEY,booking_id TEXT,screen_id TEXT,start_at TEXT,end_at TEXT,observer TEXT,status TEXT,source_id INTEGER);
 CREATE TABLE IF NOT EXISTS obligation(id INTEGER PRIMARY KEY,booking_id TEXT,missing_seconds INTEGER,status TEXT,reason TEXT);
 CREATE TABLE IF NOT EXISTS makegood(id TEXT PRIMARY KEY,obligation_id INTEGER,booking_id TEXT,status TEXT,source_id INTEGER);
+CREATE TABLE IF NOT EXISTS auction(id TEXT PRIMARY KEY,objective TEXT,deadline TEXT,pages_total INTEGER,accepted_qualifications TEXT,status TEXT,source_id INTEGER);
+CREATE TABLE IF NOT EXISTS auction_page(auction_id TEXT,page INTEGER,bid_count INTEGER,source_id INTEGER,PRIMARY KEY(auction_id,page));
+CREATE TABLE IF NOT EXISTS bid(auction_id TEXT,id TEXT,version INTEGER,agent TEXT,submitted_at TEXT,withdrawn INTEGER,amount INTEGER,budget_cap INTEGER,qualification TEXT,public_welfare INTEGER,mode TEXT,source_id INTEGER,PRIMARY KEY(auction_id,id,version));
+CREATE TABLE IF NOT EXISTS bid_slot(auction_id TEXT,bid_id TEXT,version INTEGER,idx INTEGER,screen_id TEXT,start_at TEXT,end_at TEXT,creative_id TEXT,revision INTEGER,priority INTEGER,source_id INTEGER,PRIMARY KEY(auction_id,bid_id,version,idx));
+CREATE TABLE IF NOT EXISTS correction(id TEXT PRIMARY KEY,auction_id TEXT,bid_id TEXT,note TEXT,submitted_at TEXT,source_id INTEGER);
+CREATE TABLE IF NOT EXISTS allocation(auction_id TEXT PRIMARY KEY,fingerprint TEXT,objective TEXT,total_amount INTEGER,winners TEXT,losers TEXT,source_id INTEGER);
 '''
 @contextmanager
 def connect(path):
@@ -42,4 +48,5 @@ def already(db,table,event_id,sid):
 
 def state(db):
     return {t:[dict(r) for r in db.execute(f'SELECT * FROM {t} ORDER BY 1')]
-            for t in ('creative','license','screen','maintenance','booking','proof','obligation','makegood')}
+            for t in ('creative','license','screen','maintenance','booking','proof','obligation','makegood',
+                      'auction','auction_page','bid','bid_slot','correction','allocation')}

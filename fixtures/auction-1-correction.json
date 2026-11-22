@@ -1,0 +1,8 @@
+{
+  "id": "COR-1",
+  "auction_id": "AUC-1",
+  "bid_id": "BID-A",
+  "submitted_at": "2026-06-09T20:00:00Z",
+  "note": "agency-a asked to raise BID-A to 1200 after the deadline",
+  "changes": {"amount": 1200}
+}

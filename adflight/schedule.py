@@ -22,21 +22,24 @@ def maintenance(path,file):
             db.execute("UPDATE booking SET status='interrupted' WHERE id=?",(row['id'],))
         return {'id':d['id'],'interrupted':[x['id'] for x in affected]}
 
+def _book(db,d,sid):
+    start,end=at(d['start_at']),at(d['end_at'])
+    if start>=end:raise ValueError('invalid_booking_window')
+    screen=db.execute('SELECT * FROM screen WHERE id=?',(d['screen_id'],)).fetchone()
+    if not screen:raise ValueError('unknown_screen')
+    reason=eligible(db,d['creative_id'],d['revision'],screen['city'],start,end)
+    if reason:raise ValueError(reason)
+    if db.execute('SELECT 1 FROM maintenance WHERE screen_id=? AND start_at<? AND end_at>?',(d['screen_id'],end,start)).fetchone():raise ValueError('screen_under_maintenance')
+    overlap=db.execute("SELECT id FROM booking WHERE screen_id=? AND start_at<? AND end_at>? AND status='confirmed'",(d['screen_id'],end,start)).fetchone()
+    status='waitlisted' if overlap else 'confirmed'
+    db.execute('INSERT INTO booking VALUES(?,?,?,?,?,?,?,?,?)',(d['id'],d['creative_id'],d['revision'],d['screen_id'],start,end,int(d['priority']),status,sid))
+    return {'id':d['id'],'status':status,'blocked_by':overlap['id'] if overlap else None}
+
 def book(path,file):
     with connect(path) as db,db:
         sid,d,replay=source(db,'booking',file)
         if already(db,'booking',d['id'],sid):return {'id':d['id'],'replayed':True}
-        start,end=at(d['start_at']),at(d['end_at'])
-        if start>=end:raise ValueError('invalid_booking_window')
-        screen=db.execute('SELECT * FROM screen WHERE id=?',(d['screen_id'],)).fetchone()
-        if not screen:raise ValueError('unknown_screen')
-        reason=eligible(db,d['creative_id'],d['revision'],screen['city'],start,end)
-        if reason:raise ValueError(reason)
-        if db.execute('SELECT 1 FROM maintenance WHERE screen_id=? AND start_at<? AND end_at>?',(d['screen_id'],end,start)).fetchone():raise ValueError('screen_under_maintenance')
-        overlap=db.execute("SELECT id FROM booking WHERE screen_id=? AND start_at<? AND end_at>? AND status='confirmed'",(d['screen_id'],end,start)).fetchone()
-        status='waitlisted' if overlap else 'confirmed'
-        db.execute('INSERT INTO booking VALUES(?,?,?,?,?,?,?,?,?)',(d['id'],d['creative_id'],d['revision'],d['screen_id'],start,end,int(d['priority']),status,sid))
-        return {'id':d['id'],'status':status,'blocked_by':overlap['id'] if overlap else None}
+        return _book(db,d,sid)
 
 def cancel(path,file):
     with connect(path) as db,db:

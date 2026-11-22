@@ -6,9 +6,10 @@ def report(path):
     with connect(path) as db:return {'state':state(db),'sources':[{'kind':x['kind'],'sha':x['sha']} for x in db.execute('SELECT kind,sha FROM source ORDER BY id')]}
 
 def audit(path):
-    from . import creative,schedule,playback
+    from . import creative,schedule,playback,auction
     funcs={'creative':creative.register,'license':creative.license,'screen':schedule.screen,'maintenance':schedule.maintenance,
-           'booking':schedule.book,'cancel':schedule.cancel,'proof':playback.proof,'makegood':playback.makegood}
+           'booking':schedule.book,'cancel':schedule.cancel,'proof':playback.proof,'makegood':playback.makegood,
+           'auction_page':auction.ingest_page,'correction':auction.correct,'publish':auction.publish}
     original=report(path)
     with connect(path) as db:raw=[(x['kind'],x['raw']) for x in db.execute('SELECT kind,raw FROM source ORDER BY id')]
     # Decisions from settle are recomputed after all imported evidence.

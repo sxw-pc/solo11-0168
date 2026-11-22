@@ -1,0 +1,41 @@
+{
+  "auction_id": "AUC-1",
+  "objective": "max_revenue",
+  "deadline": "2026-06-09T18:00:00Z",
+  "page": 1,
+  "pages_total": 2,
+  "accepted_qualifications": ["agency-licensed", "public-welfare"],
+  "bids": [
+    {
+      "id": "BID-A",
+      "agent": "agency-a",
+      "submitted_at": "2026-06-09T09:00:00Z",
+      "version": 1,
+      "withdrawn": false,
+      "amount": 900,
+      "budget_cap": 1000,
+      "qualification": "agency-licensed",
+      "public_welfare": false,
+      "mode": "all_or_nothing",
+      "slots": [
+        {"screen_id": "S1", "start_at": "2026-06-10T10:00:00Z", "end_at": "2026-06-10T10:10:00Z", "creative_id": "ADA", "revision": 1, "priority": 10},
+        {"screen_id": "S2", "start_at": "2026-06-10T10:00:00Z", "end_at": "2026-06-10T10:10:00Z", "creative_id": "ADA", "revision": 1, "priority": 10}
+      ]
+    },
+    {
+      "id": "BID-B",
+      "agent": "agency-b",
+      "submitted_at": "2026-06-09T10:00:00Z",
+      "version": 1,
+      "withdrawn": false,
+      "amount": 600,
+      "budget_cap": 800,
+      "qualification": "agency-licensed",
+      "public_welfare": false,
+      "mode": "all_or_nothing",
+      "slots": [
+        {"screen_id": "S1", "start_at": "2026-06-10T10:00:00Z", "end_at": "2026-06-10T10:10:00Z", "creative_id": "ADB", "revision": 1, "priority": 5}
+      ]
+    }
+  ]
+}

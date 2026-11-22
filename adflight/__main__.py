@@ -1,22 +1,30 @@
 import argparse,json,tempfile
 from pathlib import Path
-from . import creative,schedule,playback
+from . import creative,schedule,playback,auction
 from .report import report,audit
 
 COMMANDS={'creative-import':creative.register,'license-import':creative.license,'screen-import':schedule.screen,
           'maintenance-import':schedule.maintenance,'booking-import':schedule.book,'cancel-import':schedule.cancel,
-          'proof-import':playback.proof,'makegood-import':playback.makegood}
+          'proof-import':playback.proof,'makegood-import':playback.makegood,
+          'auction-ingest':auction.ingest_page,'auction-correct':auction.correct}
 def main():
     p=argparse.ArgumentParser();s=p.add_subparsers(dest='cmd',required=True)
     for cmd in COMMANDS:
         x=s.add_parser(cmd);x.add_argument('file');x.add_argument('--db',required=True)
     q=s.add_parser('settle');q.add_argument('--db',required=True);q.add_argument('--booking',required=True)
+    for cmd in ('auction-allocate','auction-publish'):
+        x=s.add_parser(cmd);x.add_argument('--db',required=True);x.add_argument('--auction',required=True)
     for cmd in ('report','audit'):
         x=s.add_parser(cmd);x.add_argument('--db',required=True)
     d=s.add_parser('demo');d.add_argument('--db')
     a=p.parse_args()
     if a.cmd in COMMANDS:out=COMMANDS[a.cmd](a.db,a.file)
     elif a.cmd=='settle':out=playback.settle(a.db,a.booking)
+    elif a.cmd=='auction-allocate':out=auction.allocate(a.db,a.auction)
+    elif a.cmd=='auction-publish':
+        with tempfile.NamedTemporaryFile('w',suffix='.json',delete=False) as t:
+            json.dump({'auction_id':a.auction},t);payload=t.name
+        out=auction.publish(a.db,payload)
     elif a.cmd=='report':out=report(a.db)
     elif a.cmd=='audit':out=audit(a.db)
     else:

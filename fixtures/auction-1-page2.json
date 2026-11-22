@@ -1,0 +1,25 @@
+{
+  "auction_id": "AUC-1",
+  "objective": "max_revenue",
+  "deadline": "2026-06-09T18:00:00Z",
+  "page": 2,
+  "pages_total": 2,
+  "accepted_qualifications": ["agency-licensed", "public-welfare"],
+  "bids": [
+    {
+      "id": "BID-C",
+      "agent": "city-council",
+      "submitted_at": "2026-06-09T11:00:00Z",
+      "version": 1,
+      "withdrawn": false,
+      "amount": 100,
+      "budget_cap": 200,
+      "qualification": "public-welfare",
+      "public_welfare": true,
+      "mode": "all_or_nothing",
+      "slots": [
+        {"screen_id": "S2", "start_at": "2026-06-10T10:00:00Z", "end_at": "2026-06-10T10:10:00Z", "creative_id": "ADC", "revision": 1, "priority": 1}
+      ]
+    }
+  ]
+}
