@@ -1,6 +1,10 @@
 from .store import connect,source,already,at
 from .creative import eligible
 
+def effective(db,screen_id,start,end):
+    """Bookings that currently oblige playback on a screen within [start,end)."""
+    return [dict(r) for r in db.execute("SELECT * FROM booking WHERE screen_id=? AND status='confirmed' AND start_at<? AND end_at>? ORDER BY start_at,id",(screen_id,end,start))]
+
 def screen(path,file):
     with connect(path) as db,db:
         sid,d,replay=source(db,'screen',file)
