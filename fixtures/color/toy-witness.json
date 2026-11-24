@@ -1,0 +1,118 @@
+{
+  "camera_A": [
+    1,
+    1,
+    1
+  ],
+  "camera_B": [
+    1,
+    1,
+    1
+  ],
+  "camera_certification_for_B_vs_A_target": {
+    "nominal_tristimulus": [
+      0.5,
+      0.5,
+      1.5
+    ],
+    "observer_box": [
+      [
+        0.0,
+        1.0
+      ],
+      [
+        0.0,
+        1.0
+      ],
+      [
+        1.0,
+        2.0
+      ]
+    ],
+    "reason": "observer_bound_exceeds_tolerance",
+    "status": "rejected",
+    "tolerance": 0.05,
+    "worst_bound": 1.7320508075688772
+  },
+  "camera_identical": true,
+  "camera_rows": [
+    [
+      1,
+      0,
+      0,
+      1
+    ],
+    [
+      0,
+      1,
+      0,
+      1
+    ],
+    [
+      0,
+      0,
+      1,
+      0
+    ]
+  ],
+  "eye_A": [
+    1,
+    1,
+    1
+  ],
+  "eye_B": [
+    0,
+    0,
+    2
+  ],
+  "eye_different": true,
+  "eye_rows": [
+    [
+      1,
+      0,
+      0,
+      0
+    ],
+    [
+      0,
+      1,
+      0,
+      0
+    ],
+    [
+      0,
+      0,
+      1,
+      1
+    ]
+  ],
+  "grid_bands": [
+    1.0,
+    2.0,
+    3.0,
+    4.0
+  ],
+  "null_spectrum": [
+    1,
+    1,
+    0,
+    -1
+  ],
+  "observer_sees_null": [
+    1,
+    1,
+    -1
+  ],
+  "spectrum_A": [
+    1,
+    1,
+    1,
+    0
+  ],
+  "spectrum_B": [
+    0,
+    0,
+    1,
+    1
+  ]
+}

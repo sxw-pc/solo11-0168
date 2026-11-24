@@ -13,12 +13,24 @@ CREATE TABLE IF NOT EXISTS booking(id TEXT PRIMARY KEY,creative_id TEXT,revision
 CREATE TABLE IF NOT EXISTS proof(id TEXT PRIMARY KEY,booking_id TEXT,screen_id TEXT,start_at TEXT,end_at TEXT,observer TEXT,status TEXT,source_id INTEGER);
 CREATE TABLE IF NOT EXISTS obligation(id INTEGER PRIMARY KEY,booking_id TEXT,missing_seconds INTEGER,status TEXT,reason TEXT);
 CREATE TABLE IF NOT EXISTS makegood(id TEXT PRIMARY KEY,obligation_id INTEGER,booking_id TEXT,status TEXT,source_id INTEGER);
+CREATE TABLE IF NOT EXISTS calibration(id TEXT PRIMARY KEY,instrument_serial TEXT,kind TEXT,valid_from TEXT,valid_until TEXT,issuer TEXT,spec_json TEXT,source_id INTEGER);
+CREATE TABLE IF NOT EXISTS panel(id TEXT PRIMARY KEY,screen_id TEXT,version INTEGER,spec_json TEXT,source_id INTEGER,UNIQUE(screen_id,version));
+CREATE TABLE IF NOT EXISTS capture(id TEXT PRIMARY KEY,panel_id TEXT,measured_at TEXT,position TEXT,temperature_c REAL,drive_level REAL,drive_current_a REAL,ambient_lux REAL,doc_json TEXT,source_id INTEGER);
+CREATE TABLE IF NOT EXISTS color_target(creative_id TEXT,revision INTEGER,route TEXT,doc_json TEXT,source_id INTEGER,PRIMARY KEY(creative_id,revision,route));
+CREATE TABLE IF NOT EXISTS color_approval(id TEXT PRIMARY KEY,creative_id TEXT,revision INTEGER,panel_id TEXT,route TEXT,status TEXT,reason TEXT,bound REAL,tolerance REAL,lut_json TEXT,source_id INTEGER,revoked_at TEXT,revoke_reason TEXT);
+CREATE TABLE IF NOT EXISTS color_freeze(id TEXT PRIMARY KEY,approval_id TEXT,booking_id TEXT,status TEXT,notified INTEGER,source_id INTEGER);
+CREATE TABLE IF NOT EXISTS notification(id TEXT PRIMARY KEY,creative_id TEXT,kind TEXT,message TEXT,created_at TEXT,source_id INTEGER);
 '''
+def _migrate(db):
+    cols={r['name'] for r in db.execute('PRAGMA table_info(booking)')}
+    if 'color_route' not in cols:
+        db.execute('ALTER TABLE booking ADD COLUMN color_route TEXT')
 @contextmanager
 def connect(path):
     dest=Path(path);dest.parent.mkdir(parents=True,exist_ok=True)
     db=sqlite3.connect(dest);db.row_factory=sqlite3.Row
-    try:db.executescript(SCHEMA);yield db
+    try:
+        db.executescript(SCHEMA);_migrate(db);yield db
     finally:db.close()
 
 def at(value):
@@ -42,4 +54,5 @@ def already(db,table,event_id,sid):
 
 def state(db):
     return {t:[dict(r) for r in db.execute(f'SELECT * FROM {t} ORDER BY 1')]
-            for t in ('creative','license','screen','maintenance','booking','proof','obligation','makegood')}
+            for t in ('creative','license','screen','maintenance','booking','proof','obligation','makegood',
+                      'calibration','panel','capture','color_target','color_approval','color_freeze','notification')}

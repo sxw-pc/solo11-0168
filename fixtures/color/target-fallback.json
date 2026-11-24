@@ -1,0 +1,19 @@
+{
+  "brightness_commitment": "screen retains full brightness",
+  "creative_id": "AD1",
+  "note": "pre-approved monochrome brand material; different artwork",
+  "reference_spectrum": null,
+  "revision": 2,
+  "route": "fallback",
+  "scale": [
+    1.2,
+    1.2,
+    1.2
+  ],
+  "tolerance": 0.2,
+  "tristimulus": [
+    1.2,
+    1.2,
+    1.2
+  ]
+}

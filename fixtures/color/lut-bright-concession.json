@@ -1,0 +1,28 @@
+{
+  "bound": 0.01573172516109677,
+  "codes": [
+    255,
+    255,
+    255
+  ],
+  "drift_error": 0.015249067892483993,
+  "luminance_scale": 0.1999999999999999,
+  "note": "highlight exceeds the dark-cell gamut; actual brightness is reduced",
+  "promised_tristimulus": [
+    1.5713743300294178,
+    1.8808367433564401,
+    1.804597617275432
+  ],
+  "quantization_error": 0.000482657268612584,
+  "realized_tristimulus": [
+    1.5713743300294185,
+    1.8808367433564415,
+    1.804597617275433
+  ],
+  "residual": 1.922170997134656e-16,
+  "target_tristimulus": [
+    7.856871650147093,
+    9.404183716782205,
+    9.022988086377165
+  ]
+}

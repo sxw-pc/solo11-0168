@@ -1,0 +1,46 @@
+{
+  "bits": 8,
+  "drift_nm": 3.0,
+  "emitters": [
+    {
+      "center_nm": 460,
+      "drift_nm_per_c": 0.05,
+      "drop_per_c": 0.002,
+      "peak": 1.0,
+      "ref_temp_c": 25,
+      "sigma_nm": 12
+    },
+    {
+      "center_nm": 545,
+      "drift_nm_per_c": 0.05,
+      "drop_per_c": 0.002,
+      "peak": 1.0,
+      "ref_temp_c": 25,
+      "sigma_nm": 12
+    },
+    {
+      "center_nm": 625,
+      "drift_nm_per_c": 0.06,
+      "drop_per_c": 0.002,
+      "peak": 1.0,
+      "ref_temp_c": 25,
+      "sigma_nm": 14
+    }
+  ],
+  "envelope": {
+    "drive_levels": [
+      0.2,
+      0.6,
+      1.0
+    ],
+    "temperatures_c": [
+      5,
+      25,
+      45
+    ]
+  },
+  "id": "P1",
+  "quantization": 0.5,
+  "screen_id": "S1",
+  "version": 1
+}

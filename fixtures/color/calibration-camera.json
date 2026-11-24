@@ -1,0 +1,8 @@
+{
+  "id": "CAL-CAM-1",
+  "instrument_serial": "CAM-220",
+  "issuer": "national-metrology-lab",
+  "kind": "camera",
+  "valid_from": "2026-01-01T00:00:00Z",
+  "valid_until": "2027-01-01T00:00:00Z"
+}

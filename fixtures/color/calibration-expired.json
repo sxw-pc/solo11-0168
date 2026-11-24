@@ -1,0 +1,8 @@
+{
+  "id": "CAL-SPEC-OLD",
+  "instrument_serial": "SPEC-7741",
+  "issuer": "national-metrology-lab",
+  "kind": "spectrometer",
+  "valid_from": "2024-01-01T00:00:00Z",
+  "valid_until": "2025-01-01T00:00:00Z"
+}
